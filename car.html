@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	<script src= 
+"https://code.jquery.com/jquery-1.12.4.min.js"> 
+    </script> 
+    
+	<title></title>
+	<style type="text/css">
+		body{
+			margin:0px;padding:0px;
+			background-image:url('carb.jpg');
+			background-repeat:no-repeat;
+			background-size:100%,100%;
+			overflow:hidden;
+		}
+		.gamearea{
+			background-color:#1f1f1f;
+			width:400px;
+			height:100vh;
+			position:relative;
+			margin:auto;
+			border-right:dashed;
+			border-right-color:white;
+			border-left:dashed;
+			border-left-color:white;
+			border-width:7px;
+
+		}
+		.car,.enmy{
+			background-color:red;
+			width:50px;
+			height: 70px;
+			position:absolute;
+			bottom:130px;
+			overflow:hidden;
+			z-index:2;
+			background-image:url('car1.png');
+			background-repeat:no-repeat;
+			background-size:100%,100%;
+			border-radius:20px;
+
+
+		}
+
+		.lines{
+
+			background-color:white;
+			width:10px;
+			height:90px;
+			position:absolute;
+			left:205px;
+			z-index:1;
+              
+
+		}
+		
+		#qe{
+            
+        position:absolute;
+            bottom:80px;
+
+			
+		   
+		}
+
+#qr{
+	margin-left:360px;
+	position:absolute;
+	bottom:80px;
+		   
+}
+.score{ 
+	top:0px;
+	background-color:lightgreen;
+	border-radius:5px;
+	width:40px;
+	height:30px;
+	z-index:4;
+	position:relative;
+	font-family:fantasy;
+	text-align:center;
+        }
+           
+     
+	</style>
+
+</head>
+
+<body>
+	
+     <audio controls loop="true"  autoplay="true" style="display:none;">
+  <source src="Kalimba.mp3" type="audio/ogg">
+  <source src="Kalimba.mp3" type="audio/mpeg">
+Your browser does not support the audio element.
+</audio>
+
+
+ 
+     <div class="gamearea"> 
+     	 <section class="score" id="score">..</section>
+     
+        <button id="qe" onmousedown="moving_Imagel()" type="button" class="btn btn-light" ><-</button>
+         <button id="qr" onmousedown ="moving_Imager()" type="button" class="btn btn-light">-></button>
+      </div>
+     
+     
+     <script type="text/javascript">
+     	var left = document.getElementById('qe');
+     	var right = document.getElementById('qr');  
+     	var gamearea=document.getElementsByTagName('div')[0];
+     	var car = document.createElement("div");
+     	gamearea.appendChild(car);
+     	car.setAttribute('class','car');
+     	car.setAttribute('id','ss');
+     	 for (var i = 0; i < 5; i++) {
+     	var lines = document.createElement("div");
+     	lines.setAttribute('class','lines');
+     	lines.y=(i*150);
+       lines.style.top=lines.y+"px";
+
+        gamearea.appendChild(lines);
+     	 }
+    
+ 
+
+var mousePosition;
+var offset = [0,0];
+var isDown = false;
+
+
+
+var imageOffset = 0
+function moving_Imagel() {
+  imageOffset -= 30;
+  if(car.offsetLeft>0){
+   document.querySelector('.car').style.left = imageOffset + "px";}
+}
+function moving_Imager() {
+  imageOffset += 30;
+  if (car.offsetLeft<=320) {
+   document.querySelector('.car').style.left = imageOffset + "px";}
+}  
+
+
+function movline() {
+	let line =document.querySelectorAll('.lines');
+
+	line.forEach(function(item){
+		if (item.y>=800) { item.y-=850;}
+		item.y+=3;
+		item.style.top=item.y+"px";
+	})
+}
+setInterval(movline,10);
+for (var i = 0; i <3; i++) {
+
+
+     	var enmy = document.createElement("div");
+     	enmy.setAttribute('class','enmy');
+     	enmy.y=(i*500);
+       enmy.style.top=enmy.y+"px";
+	enmy.style.left=Math.floor(Math.random() *355)+"px";
+        gamearea.appendChild(enmy);
+     	 }
+function isCollide(a, b) {
+    var aRect = a.getBoundingClientRect();
+    var bRect = b.getBoundingClientRect();
+
+    return !(
+        ((aRect.top >bRect.bottom)) ||
+        (aRect.bottom <bRect.top) ||
+        ((aRect.right< bRect.left) ||
+        (aRect.left >  bRect.right)
+    ));
+}
+function movenmy() {
+	let enmy =document.querySelectorAll('.enmy');
+
+	 enmy.forEach(function(item){
+		if (isCollide(car,item)) {
+			sessionStorage.setItem("Score", score+1);
+
+		 sessionStorage.setItem("Score", score);
+		window.location.replace("gameover.html");
+	}
+		
+		if (item.y>=800) { item.y-=850;item.style.left=Math.floor(Math.random() *350)+"px";}
+		item.y+=3;
+		item.style.top=item.y+"px";
+	})
+}
+
+setInterval(movenmy,10);
+$(document).keydown(function(e) { 
+                if (e.which == '39'&& car.offsetLeft<=320) { //Right arrow key 
+                    $(".car").finish().animate({ 
+                        left: "+=15" 
+                    },0.1); 
+                } 
+            });
+             
+$(document).keydown(function(e) { 
+                if (e.which == '37'&&car.offsetLeft>0) { //left arrow key 
+
+                    $(".car").finish().animate({ 
+                       left: "-=15"
+                         
+                    },0.1); 
+                } 
+	            }); 
+		$(document).keydown(function(e) { 
+                if (e.which == '40'&& car.offsetTop<=600) { //down arrow key 
+                    $(".car").finish().animate({
+
+                        top: "+=15" 
+                    },0); 
+                } 
+            }); 
+		$(document).keydown(function(e) { 
+                if (e.which == '38'&& car.offsetTop>60) { 
+                //up arrow key 
+                    $(".car").finish().animate({ 
+                        top: "-=15" 
+                    },0); 
+                } 
+            }); 
+        
+function getRandomColor() {
+  var letters = '0123456789ABCDEF';
+  var color = '#';
+  for (var i = 0; i < 6; i++) {
+    color += letters[Math.floor(Math.random() * 16)];
+  }
+  return color;
+}
+
+
+
+function setRandomColor() {
+  $(".enmy").css("background-color", getRandomColor());
+}
+ setInterval(setRandomColor,1000);
+  let score=0;
+
+ const Correct=()=>{
+        score+=1;
+       
+        console.log(score);
+document.getElementById("score").innerHTML = score;
+        
+    };
+
+    setInterval(Correct,1000);
+ 
+     </script>
+</body>
+</html>
